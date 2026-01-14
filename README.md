@@ -1,4 +1,4 @@
-# DevEnv Development Environment
+# DevEnv: A Functional Dev Environment based on Dev Containers!
 
 ![SDKMan](https://img.shields.io/badge/SDKMan!-232F3E?logo=sdkman&logoColor=white)
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?logo=openjdk&logoColor=white)
@@ -15,7 +15,6 @@
 ![Zsh](https://img.shields.io/badge/Zsh%20+%20OMZ%20+%20Powerlevel10k-%23D0C6E8.svg?&logo=zsh&logoColor=black)
 
 -------------------------
-
 
 DevEnv is a containerized development environment designed to provide a consistent and reproducible workspace for Java, Python, and Node.js development. It leverages the Dev Container specification to ensure seamless integration with VS Code and IntelliJ IDEA.
 
