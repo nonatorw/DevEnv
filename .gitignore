@@ -1,0 +1,44 @@
+### DevContainer - Arquivos Locais ###
+# Diretório de instalação (contém ferramentas e configurações sensíveis)
+!install/
+# Mas permite o README explicativo e exemplos
+!install/README.md
+!install/script-files/
+install/script-files/*
+!install/script-files/aliases.sh
+!install/script-files/dev_configs.sh
+!install/script-files/functions.sh
+!install/script-files/init-environment.sh
+!install/script-files/fonts/
+!install/script-files/userConfigs/
+
+!install/ssh-files/
+install/ssh-files/*
+!install/ssh-files/config.example
+
+### Logs ###
+*.log
+logs/
+
+### Backups ###
+*.bak
+backup/
+backups/
+
+### Arquivos Temporários ###
+*.tmp
+*.temp
+.tmp/
+
+### Arquivos Sensíveis ###
+# Chaves SSH
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+
+# Arquivos de senha
+*.password
+credentials.txt
+.env.local
+.env.*.local
