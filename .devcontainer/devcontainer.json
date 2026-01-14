@@ -1,0 +1,167 @@
+// ==============================================================================
+// DevContainer Configuration - DevEnv Project
+// ==============================================================================
+// This file configures the containerized development environment.
+// For more options: https://containers.dev/implementors/json_reference
+{
+  "name": "DevEnv Development Environment",
+
+  // ==============================================================================
+  // BUILD CONFIGURATION
+  // ==============================================================================
+  // Uses a custom Dockerfile instead of a pre-built image
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      // Customize with your username if necessary
+      "USERNAME": "ubuntu",
+      "USER_UID": "1000",
+      "USER_GID": "1000"
+    }
+  },
+
+  // ==============================================================================
+  // MOUNTS - Volume Mounts
+  // ==============================================================================
+  // Uses named Docker volumes for complete persistence between rebuilds
+  "mounts": [
+    // Volume for the entire ~/Dev directory (persists everything)
+    "source=DevEnv-dev-home,target=/home/ubuntu/Dev,type=volume",
+
+    // Custom scripts (temporary bind mount for installation)
+    "source=${localWorkspaceFolder}/install/script-files,target=/tmp/script-files,type=bind,readonly",
+
+    // SSH files (temporary bind mount for installation)
+    "source=${localWorkspaceFolder}/install/ssh-files,target=/tmp/ssh-files,type=bind,readonly",
+
+    // Tools (Payara, etc - temporary bind mount for installation)
+    "source=${localWorkspaceFolder}/install/tools,target=/tmp/tools,type=bind,readonly"
+  ],
+
+  // ==============================================================================
+  // WORKSPACE CONFIGURATION
+  // ==============================================================================
+  // Defines where the code will be mounted inside the container
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/Dev/repos/DevEnv,type=bind,consistency=cached",
+  "workspaceFolder": "/home/ubuntu/Dev/repos/DevEnv",
+
+  // ==============================================================================
+  // PODMAN CONFIGURATION
+  // ==============================================================================
+  // Required to correctly map user permissions in Podman (Rootless)
+  "runArgs": ["--userns=keep-id"],
+
+  // ==============================================================================
+  // POST-CREATE COMMANDS
+  // ==============================================================================
+  // Commands executed after container creation
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  // ==============================================================================
+  // IDE CUSTOMIZATIONS
+  // ==============================================================================
+  "customizations": {
+    // IntelliJ IDEA specific settings
+    "jetbrains": {
+      "backend": "IntelliJ",
+      "settings": {
+        // Settings can be added here
+      },
+      "plugins": [
+        // Useful Java plugin IDs
+        // "com.intellij.java" comes by default
+      ]
+    },
+
+    // VS Code settings (if used)
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-boot-dev-pack",
+        "42crunch.vscode-openapi",
+        "atommaterial.a-file-icon-vscode",
+        "davidanson.vscode-markdownlint",
+        "github.copilot",
+        "github.copilot-chat",
+        "github.remotehub",
+        "github.vscode-github-actions",
+        "google.geminicodeassist",
+        "ms-azuretools.vscode-containers",
+        "ms-vscode.azure-repos",
+        "ms-vscode.remote-repositories",
+        "vscode-icons-team.vscode-icons",
+        "zhuangtongfa.material-theme",
+        "redhat.vscode-yaml",
+        "vscjava.migrate-java-to-azure"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "java.jdt.ls.java.home": "/home/ubuntu/.sdkman/candidates/java/current",
+        "dev.containers.mountWaylandSocket": false
+      }
+    }
+  },
+
+  // ==============================================================================
+  // FEATURES - Additional Functionalities
+  // ==============================================================================
+  // Features are pre-configured packages that add tools
+  "features": {
+    "ghcr.io/devcontainers/features/git": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker": {
+      "version": "latest",
+      "moby": true
+    }
+  },
+
+  // ==============================================================================
+  // PORTS - Port Exposure
+  // ==============================================================================
+  // Ports that the container will expose
+  "forwardPorts": [
+    8080,
+    4848,
+    9009,
+    1521
+  ],
+
+  // Friendly labels for ports
+  "portsAttributes": {
+    //"8080": {
+    //  "label": "Payara Application",
+    //  "onAutoForward": "notify"
+    //},
+    //"4848": {
+    //  "label": "Payara Admin Console",
+    //  "onAutoForward": "silent"
+    //},
+    //"9009": {
+    //  "label": "Java Debug Port",
+    //  "onAutoForward": "silent"
+    //}
+  },
+
+  // ==============================================================================
+  // ENVIRONMENT VARIABLES
+  // ==============================================================================
+  // Container environment variables
+  "remoteEnv": {
+    "JAVA_HOME": "/home/ubuntu/.sdkman/candidates/java/current",
+    "MAVEN_HOME": "/home/ubuntu/.sdkman/candidates/maven/current"
+  },
+
+  // ==============================================================================
+  // USER CONFIGURATION
+  // ==============================================================================
+  // User to be used inside the container
+  "remoteUser": "ubuntu",
+
+  // ==============================================================================
+  // LIFECYCLE HOOKS
+  // ==============================================================================
+  // Command executed whenever the container starts
+  "postStartCommand": "echo '🚀 DevEnv Development Environment Ready!'"
+}

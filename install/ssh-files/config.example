@@ -1,0 +1,58 @@
+# Exemplo de Configuração SSH
+# Coloque este arquivo em: install/ssh-files/config
+
+# ==============================================================================
+# SSH Config para Projeto DevEnv
+# ==============================================================================
+
+# Configuração padrão
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    Compression yes
+
+# Exemplo: Servidor de Desenvolvimento
+Host dev-server
+    HostName dev.example.com
+    User seu-usuario
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
+    ForwardAgent yes
+
+# Exemplo: Servidor de Produção
+Host prod-server
+    HostName prod.example.com
+    User seu-usuario
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
+    ForwardAgent no
+
+# Exemplo: GitHub
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_rsa
+    IdentitiesOnly yes
+
+# Exemplo: GitLab
+Host gitlab.com
+    HostName gitlab.com
+    User git
+    IdentityFile ~/.ssh/id_rsa
+    IdentitiesOnly yes
+
+# Exemplo: BitBucket
+Host bitbucket.org
+    HostName bitbucket.org
+    User git
+    IdentityFile ~/.ssh/id_rsa
+    IdentitiesOnly yes
+
+# ==============================================================================
+# NOTAS:
+# ==============================================================================
+# 1. Substitua 'seu-usuario' pelo seu nome de usuário
+# 2. Substitua 'example.com' pelos hosts reais
+# 3. Ajuste os caminhos das chaves conforme necessário
+# 4. Este arquivo será copiado para ~/.ssh/config no container
+# ==============================================================================
