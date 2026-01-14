@@ -1,13 +1,13 @@
 # DevEnv: A Functional Dev Environment based on Dev Containers!
 
 ![SDKMan](https://img.shields.io/badge/SDKMan!-232F3E?logo=sdkman&logoColor=white)
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?logo=openjdk&logoColor=white)
+![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-C71A36?logo=apachemaven&logoColor=white)
 ![PyEnv](https://img.shields.io/badge/PyEnv-232F3E?logo=python&logoColor=white)
-![Python](https://img.shields.io/badge/python-3670A0?&logo=python&logoColor=ffdd54)
+![Python](https://img.shields.io/badge/Python-3670A0?&logo=python&logoColor=ffdd54)
 ![NVM](https://img.shields.io/badge/NVM-232F3E?&logo=node.js&logoColor=white)
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?&logo=node.js&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?&logo=docker&logoColor=white)
+![NodeJS](https://img.shields.io/badge/Node.js-6DA55F?&logo=node.js&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-%230db7ed.svg?&logo=docker&logoColor=white)
 ![Podman](https://img.shields.io/badge/Podman-892CA0?&logo=podman&logoColor=white)
 ![VS Code](https://img.shields.io/badge/VSCode-0078d7.svg?&logo=vscodium&logoColor=white)
 ![IntelliJ IDEA](https://img.shields.io/badge/IntelliJIDEA-000000.svg?&logo=intellij-idea&logoColor=white)
