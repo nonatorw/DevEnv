@@ -1,21 +1,21 @@
 # ==============================================================================
-# DevContainer para Projeto DevEnv
+# DevContainer for DevEnv Project
 # Base: Ubuntu 24.04 LTS
 # ==============================================================================
 FROM ubuntu:24.04
 
-# Evita prompts interativos durante a instalação
+# Avoid interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
 
 # ==============================================================================
-# ARGUMENTOS DE BUILD - Personalizáveis durante o build
+# BUILD ARGUMENTS - Customizable during build
 # ==============================================================================
 ARG USERNAME=ubuntu
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 # ==============================================================================
-# VARIÁVEIS DE AMBIENTE GLOBAIS
+# GLOBAL ENVIRONMENT VARIABLES
 # ==============================================================================
 ENV HOME=/home/${USERNAME}
 ENV SDKMAN_DIR=${HOME}/.sdkman
@@ -24,7 +24,7 @@ ENV PYENV_ROOT=${HOME}/.pyenv
 ENV PATH="${HOME}/.local/bin:${PYENV_ROOT}/bin:${PATH}"
 
 # ==============================================================================
-# ETAPA 1: Atualização do Sistema e Pacotes Essenciais
+# STEP 1: System Update and Essential Packages
 # ==============================================================================
 RUN apt-get update && \
     apt-get install -y \
@@ -70,7 +70,7 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-# Gera locales para evitar problemas de encoding
+# Generate locales to avoid encoding problems
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     echo "pt_BR.UTF-8 UTF-8" >> /etc/locale.gen && \
     locale-gen
@@ -78,27 +78,27 @@ ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
 # ==============================================================================
-# ETAPA 2: Configuração do Usuário
+# STEP 2: User Configuration
 # ==============================================================================
-# Cria o grupo se não existir
+# Create group if it doesn't exist
 RUN groupadd --gid $USER_GID $USERNAME || true
 
-# Cria o usuário se não existir
+# Create user if it doesn't exist
 RUN useradd --uid $USER_UID --gid $USER_GID -m -s /bin/zsh $USERNAME || true
 
-# Adiciona o usuário ao grupo sudo
+# Add user to sudo group
 RUN echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME && \
     usermod -aG sudo $USERNAME || true
 
 # ==============================================================================
-# ETAPA 3: Estrutura de Diretórios do Projeto
+# STEP 3: Project Directory Structure
 # ==============================================================================
 USER $USERNAME
 WORKDIR $HOME
 
-# Cria a estrutura de diretórios
-# NOTA: ~/Dev será montado como volume Docker (persiste entre rebuilds)
+# Create directory structure
+# NOTE: ~/Dev will be mounted as a Docker volume (persists between rebuilds)
 RUN mkdir -p ${HOME}/.local/bin && \
     mkdir -p ${HOME}/.ssh       && \
     mkdir -p ${HOME}/.m2        && \
@@ -106,11 +106,11 @@ RUN mkdir -p ${HOME}/.local/bin && \
     mkdir -p ${HOME}/Dev/tools  && \
     mkdir -p ${HOME}/Dev/repos
 
-# O volume Docker 'DevEnv-dev-home' será montado em ~/Dev
-# Isso garante que TUDO em ~/Dev persiste entre rebuilds
+# The Docker volume 'DevEnv-dev-home' will be mounted at ~/Dev
+# This ensures EVERYTHING in ~/Dev persists between rebuilds
 
 # ==============================================================================
-# ETAPA 4: Instalação do Payara (Incorporado na Imagem)
+# STEP 4: Payara Installation (Embedded in Image)
 # ==============================================================================
 COPY --chown=${USERNAME}:${USERNAME} install/tools/payara*.zip ${HOME}/temp/
 RUN unzip -q ${HOME}/temp/payara*.zip -d ${HOME}/Dev/tools/ && \
@@ -120,20 +120,20 @@ RUN unzip -q ${HOME}/temp/payara*.zip -d ${HOME}/Dev/tools/ && \
     rm -rf ${HOME}/temp/payara*.zip
 
 # ==============================================================================
-# ETAPA 5: Instalação de Fontes para Powerlevel10k
+# STEP 5: Font Installation for Powerlevel10k
 # ==============================================================================
-# Cria diretório de fontes e copia as fontes do Meslo
+# Create font directory and copy Meslo fonts
 RUN mkdir -p ${HOME}/temp
 COPY --chown=${USERNAME}:${USERNAME} install/script-files/fonts/Meslo.zip ${HOME}/temp
 
-# Descompacta e instala as fontes
+# Unzip and install fonts
 RUN mkdir -p ${HOME}/.local/share/fonts/meslo && \
     unzip -q ${HOME}/temp/Meslo.zip -d ${HOME}/.local/share/fonts/meslo && \
     fc-cache -f -v && \
     rm -rf ${HOME}/temp
 
 # ==============================================================================
-# ETAPA 6: Instalação do Oh-My-Zsh, Powerlebel10k e Plugins do Oh-My-Zsh
+# STEP 6: Install Oh-My-Zsh, Powerlevel10k and Oh-My-Zsh Plugins
 # ==============================================================================
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
@@ -152,35 +152,35 @@ RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git  \
 RUN git clone https://github.com/agkozak/zsh-z  \
     "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-z"
 # ==============================================================================
-# ETAPA 7: Instalação dos SDK Managers (POR ÚLTIMO)
+# STEP 7: Install SDK Managers (LAST)
 # ==============================================================================
-# NOTA: SDKMan, PyEnv e NVM são instalados por último conforme especificado
-# Suas configurações específicas virão dos scripts em install/script-files/
+# NOTE: SDKMan, PyEnv, and NVM are installed last as specified
+# Their specific configurations will come from scripts in install/script-files/
 
-# Instala SDKMan
+# Install SDKMan
 RUN curl -s "https://get.sdkman.io" | bash
 
-# Instala PyEnv (Python version manager)
-# NOTA: Versões específicas do Python devem ser instaladas via scripts
+# Install PyEnv (Python version manager)
+# NOTE: Specific Python versions must be installed via scripts
 RUN curl https://pyenv.run | bash
 
-# Instala NVM (Node Version Manager)
-# NOTA: Versões específicas do Node.js devem ser instaladas via scripts
+# Install NVM (Node Version Manager)
+# NOTE: Specific Node.js versions must be installed via scripts
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 
 # ==============================================================================
-# ETAPA 8: Instala versões do Java e Maven via SDKMan
+# STEP 8: Install Java and Maven versions via SDKMan
 # ==============================================================================
-# ⚠️ VERSÕES MOCKADAS - EDITE CONFORME NECESSÁRIO
+# ⚠️ MOCKED VERSIONS - EDIT AS NEEDED
 # ==============================================================================
-# As versões abaixo são exemplos. Substitua pelas versões específicas do seu projeto.
+# The versions below are examples. Replace with specific versions for your project.
 #
-# Para listar versões disponíveis:
+# To list available versions:
 #   sdk list java
 #   sdk list maven
 #
-# Formato da versão Java: MAJOR.MINOR.PATCH-VENDOR
-#   Exemplos: 8.0.432-tem, 11.0.25-tem, 17.0.9-tem, 21.0.1-tem
+# Java version format: MAJOR.MINOR.PATCH-VENDOR
+#   Examples: 8.0.432-tem, 11.0.25-tem, 17.0.9-tem, 21.0.1-tem
 #   Vendors: tem (Temurin), amzn (Amazon Corretto), zulu, etc
 # ==============================================================================
 RUN bash -c "source ${SDKMAN_DIR}/bin/sdkman-init.sh \
@@ -191,32 +191,32 @@ RUN bash -c "source ${SDKMAN_DIR}/bin/sdkman-init.sh \
              && sdk default maven 3.9.9"
 
 # ==============================================================================
-# ETAPA 9: Configuração Básica do ZSH
+# STEP 9: Basic ZSH Configuration
 # ==============================================================================
-# Copia configurações do ZSH e Scripts de suporte fornecidos
+# Copy ZSH configurations and provided support scripts
 
 COPY --chown=${USERNAME}:${USERNAME} install/script-files/userConfigs/.zshrc ${HOME}/.zshrc
 COPY --chown=${USERNAME}:${USERNAME} install/script-files/userConfigs/.p10k.zsh ${HOME}/.p10k.zsh
 COPY --chown=${USERNAME}:${USERNAME} install/script-files/*.sh ${HOME}/.local/bin/
 
-# Garante permissão de execução nos scripts
+# Ensure execution permissions on scripts
 RUN chmod +x ${HOME}/.local/bin/*.sh
 
 # ==============================================================================
-# ETAPA 10: Preparação para Scripts e Configurações Personalizadas
+# STEP 10: Preparation for Custom Scripts and Configurations
 # ==============================================================================
-# Estes serão copiados via post-create.sh
+# These will be copied via post-create.sh
 WORKDIR $HOME
 
-# Define ZSH como shell padrão
+# Set ZSH as default shell
 ENV SHELL=/bin/zsh
 
 # ==============================================================================
-# ETAPA 11: Configuração de Permissões para JetBrains Tools
+# STEP 11: Permissions Configuration for JetBrains Tools
 # ==============================================================================
 USER root
 
-# Cria o diretório e ajusta permissões para o IntelliJ IDEA
+# Create directory and adjust permissions for IntelliJ IDEA
 RUN mkdir -p /.jbdevcontainer/JetBrains/RemoteDev/remote-dev-worker && \
     chown -R $USERNAME:$USERNAME /.jbdevcontainer && \
     chmod -R 755 /.jbdevcontainer
@@ -224,6 +224,6 @@ RUN mkdir -p /.jbdevcontainer/JetBrains/RemoteDev/remote-dev-worker && \
 USER $USERNAME
 
 # ==============================================================================
-# COMANDO PADRÃO
+# DEFAULT COMMAND
 # ==============================================================================
 CMD ["/bin/zsh"]

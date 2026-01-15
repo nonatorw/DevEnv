@@ -28,13 +28,10 @@
   "mounts": [
     // Volume for the entire ~/Dev directory (persists everything)
     "source=DevEnv-dev-home,target=/home/ubuntu/Dev,type=volume",
-
     // Custom scripts (temporary bind mount for installation)
     "source=${localWorkspaceFolder}/install/script-files,target=/tmp/script-files,type=bind,readonly",
-
     // SSH files (temporary bind mount for installation)
     "source=${localWorkspaceFolder}/install/ssh-files,target=/tmp/ssh-files,type=bind,readonly",
-
     // Tools (Payara, etc - temporary bind mount for installation)
     "source=${localWorkspaceFolder}/install/tools,target=/tmp/tools,type=bind,readonly"
   ],
@@ -50,7 +47,11 @@
   // PODMAN CONFIGURATION
   // ==============================================================================
   // Required to correctly map user permissions in Podman (Rootless)
-  "runArgs": ["--userns=keep-id"],
+  "runArgs": [
+    "--privileged",
+    // Remove the line below
+    "--userns=keep-id" // UNCOMMENT THIS LINE IF USING PODMAN (Rootless)
+  ],
 
   // ==============================================================================
   // POST-CREATE COMMANDS
@@ -77,28 +78,279 @@
     // VS Code settings (if used)
     "vscode": {
       "extensions": [
-        "vscjava.vscode-java-pack",
-        "vmware.vscode-boot-dev-pack",
         "42crunch.vscode-openapi",
         "atommaterial.a-file-icon-vscode",
         "davidanson.vscode-markdownlint",
+        "docker.docker",
+        "editorconfig.editorconfig",
+        "esbenp.prettier-vscode",
+        "firefox-devtools.vscode-firefox-debug",
+        "foxundermoon.shell-format",
         "github.copilot",
         "github.copilot-chat",
+        "github.github-vscode-theme",
         "github.remotehub",
         "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "google.gemini-cli-vscode-ide-companion",
         "google.geminicodeassist",
+        "grafana.grafana-alloy",
+        "grafana.grafana-vscode",
+        "grafana.vscode-jsonnet",
+        "hashicorp.terraform",
+        "humao.rest-client",
+        "mads-hartmann.bash-ide-vscode",
+        "mechatroner.rainbow-csv",
+        "microprofile-community.mp-rest-client-generator-vscode-ext",
+        "microprofile-community.mp-starter-vscode-ext",
+        "microprofile-community.vscode-microprofile-pack",
+        "ms-azure-load-testing.microsoft-testing",
+        "ms-azuretools.azure-dev",
+        "ms-azuretools.vscode-azure-github-copilot",
+        "ms-azuretools.vscode-azure-mcp-server",
+        "ms-azuretools.vscode-azureappservice",
+        "ms-azuretools.vscode-azurecontainerapps",
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-azuretools.vscode-azureresourcegroups",
+        "ms-azuretools.vscode-azurestaticwebapps",
+        "ms-azuretools.vscode-azurestorage",
+        "ms-azuretools.vscode-azurevirtualmachines",
         "ms-azuretools.vscode-containers",
+        "ms-azuretools.vscode-cosmosdb",
+        "ms-azuretools.vscode-docker",
+        "ms-ceintl.vscode-language-pack-pt-br",
+        "ms-edgedevtools.vscode-edge-devtools",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "ms-python.debugpy",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.vscode-python-envs",
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode-remote.remote-ssh-edit",
+        "ms-vscode-remote.remote-wsl",
+        "ms-vscode-remote.vscode-remote-extensionpack",
         "ms-vscode.azure-repos",
+        "ms-vscode.powershell",
+        "ms-vscode.remote-explorer",
         "ms-vscode.remote-repositories",
-        "vscode-icons-team.vscode-icons",
-        "zhuangtongfa.material-theme",
+        "ms-vscode.remote-server",
+        "ms-vscode.test-adapter-converter",
+        "ms-vscode.vscode-node-azure-pack",
+        "ms-vscode.vscode-speech",
+        "ms-vscode.vscode-speech-language-pack-pt-br",
+        "ms-vscode.wordcount",
+        "ms-windows-ai-studio.windows-ai-studio",
+        "oracle.sql-developer",
+        "payara.payara-vscode",
+        "powerquery.vscode-powerquery",
+        "powerquery.vscode-powerquery-sdk",
+        "redhat.ansible",
+        "redhat.fabric8-analytics",
+        "redhat.java",
+        "redhat.vscode-microprofile",
+        "redhat.vscode-xml",
         "redhat.vscode-yaml",
-        "vscjava.migrate-java-to-azure"
+        "shengchen.vscode-checkstyle",
+        "sonarsource.sonarlint-vscode",
+        "teamsdevapp.vscode-ai-foundry",
+        "tomoki1207.pdf",
+        "vmware.vscode-boot-dev-pack",
+        "vmware.vscode-spring-boot",
+        "vscjava.migrate-java-to-azure",
+        "vscjava.vscode-gradle",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-java-dependency",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-java-test",
+        "vscjava.vscode-java-upgrade",
+        "vscjava.vscode-lombok",
+        "vscjava.vscode-maven",
+        "vscjava.vscode-spring-boot-dashboard",
+        "vscjava.vscode-spring-initializr",
+        "vscode-icons-team.vscode-icons",
+        "zhuangtongfa.material-theme"
       ],
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "zsh",
+        "diffEditor.codeLens": true,
+        "diffEditor.experimental.showMoves": true,
+        "diffEditor.ignoreTrimWhitespace": true,
+        "diffEditor.maxComputationTime": 0,
+        "diffEditor.renderSideBySide": true,
+
+        "explorer.compactFolders": false,
+        "explorer.confirmDelete": false,
+        "explorer.fileNesting.enabled": true,
+        "explorer.sortOrder": "type",
+
+        "files.associations": {
+          "*.sh": "shellscript",
+          "*.zsh": "shellscript",
+          "*.fish": "shellscript",
+          "*.env": "dotenv",
+          "*.md": "markdown",
+          "*.jsonc": "json",
+        },
+        "files.defaultLanguage": "",
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true,
+
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "git.enableSmartCommit": true,
+        "git.openRepositoryInParentFolders": "never",
+
+        "http.systemCertificatesNode": true,
+
+        "java.help.collectErrorLog": true,
+
+        "markdown.preview.breaks": true,
+        "markdown.preview.linkify": true,
+        "markdown.preview.typographer": true,
+        "microprofile.alwaysShowOverview": false,
+
+        "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+        "powershell.codeFormatting.alignPropertyValuePairs": true,
+        "powershell.codeFormatting.ignoreOneLineBlock": true,
+        "powershell.codeFormatting.newLineAfterCloseBrace": true,
+        "powershell.codeFormatting.newLineAfterOpenBrace": true,
+        "powershell.codeFormatting.openBraceOnSameLine": true,
+        "powershell.codeFormatting.preset": "OTBS",
+        "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+        "powershell.codeFormatting.useConstantStrings": true,
+        "powershell.codeFormatting.useCorrectCasing": true,
+        "powershell.codeFormatting.whitespaceAfterSeparator": true,
+        "powershell.codeFormatting.whitespaceAroundOperator": true,
+        "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
+        "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
+        "powershell.developer.editorServicesLogLevel": "Warning",
+        "powershell.helpCompletion": "BlockComment",
+        "powershell.integratedConsole.showOnStartup": false,
+        "powershell.pester.codeLens": true,
+        "powershell.pester.outputVerbosity": "Detailed",
+        "powershell.pester.useLegacyCodeLens": false,
+        "problems.autoReveal": true,
+        "problems.decorations.enabled": true,
+        "problems.sortOrder": "severity",
+        "problems.visibility": true,
+
+        "redhat.telemetry.enabled": true,
+        "remote.autoForwardPortsSource": "hybrid",
+
+        "security.workspace.trust.untrustedFiles": "open",
+        "sonarlint.automaticAnalysis": false,
+        "sonarlint.focusOnNewCode": true,
+        "sqldeveloper.sqlHistory.historyLimit": 500,
+
+        "vscode-edge-devtools.webhint": false,
+
+        "workbench.iconTheme": "a-file-icon-vscode",
+        "workbench.startupEditor": "none",
+
+        "[*]": {
+          "editor.autoClosingBrackets": "always",
+          "editor.autoClosingComments": "always",
+          "editor.autoClosingQuotes": "always",
+          "editor.autoIndent": "advanced",
+          "editor.autoSurround": "languageDefined",
+          "editor.bracketPairColorization.enabled": true,
+          "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          },
+          "editor.codeLens": true,
+          "editor.comments.ignoreEmptyLines": true,
+          "editor.comments.insertSpace": true,
+          "editor.detectIndentation": false,
+          "editor.fontFamily": "MesloLGS Nerd Font Mono, Fira Code, Consolas, 'Courier New', monospace",
+          "editor.fontLigatures": true,
+          "editor.fontSize": 12,
+          "editor.formatOnPaste": false,
+          "editor.formatOnSave": false,
+          "editor.guides.bracketPairs": "active",
+          "editor.insertSpaces": true,
+          "editor.largeFileOptimizations": false,
+          "editor.minimap.enabled": true,
+          "editor.minimap.maxColumn": 120,
+          "editor.minimap.renderCharacters": false,
+          "editor.multiCursorModifier": "ctrlCmd",
+          "editor.quickSuggestions": {
+            "other": "on",
+            "comments": "on",
+            "strings": "on"
+          },
+          "editor.renderWhitespace": "none",
+          "editor.rulers": [
+            79,
+            120
+          ],
+          "editor.semanticHighlighting.enabled": true,
+          "editor.suggest.showSnippets": true,
+          "editor.tabSize": 2,
+          "editor.trimAutoWhitespace": true,
+        },
+
+        "[css]": {
+          "editor.defaultFormatter": "vscode.css-language-features"
+        },
+
+        "[dockerfile]": {
+          "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+        },
+
+        "[dockercompose, github-actions-workflow, yaml]": {
+          "editor.insertSpaces": true,
+          "editor.tabSize": 2,
+          "editor.autoIndent": "advanced",
+          "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+          },
+          "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
+
+        "[html]": {
+          "editor.defaultFormatter": "vscode.html-language-features"
+        },
+
+        "[java]": {
+          "editor.defaultFormatter": "redhat.java"
+        },
+
+        "[json, jsonc]": {
+          "editor.defaultFormatter": "vscode.json-language-features"
+        },
+
+        "[markdown]": {
+          "editor.defaultFormatter": "vscode.markdown-language-features"
+        },
+
+        "[oraclesql]": {
+          "editor.suggest.showSnippets": true,
+          "editor.formatOnPaste": false,
+          "editor.formatOnSave": false,
+          "editor.quickSuggestions": {
+            "comments": "on",
+            "strings": "on",
+            "other": "on"
+          },
+          "editor.defaultFormatter": "Oracle.sql-developer"
+        },
+
+        "[shellscript]": {
+          "files.eol": "\n",
+          "editor.defaultColorDecorators": "never",
+          "editor.tabSize": 2,
+          "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+        },
+
+        // Specific settings for Remote Container
+        "dev.containers.mountWaylandSocket": true,
         "java.jdt.ls.java.home": "/home/ubuntu/.sdkman/candidates/java/current",
-        "dev.containers.mountWaylandSocket": false
+        "terminal.integrated.defaultProfile.linux": "zsh"
       }
     }
   },
@@ -130,18 +382,18 @@
 
   // Friendly labels for ports
   "portsAttributes": {
-    //"8080": {
-    //  "label": "Payara Application",
-    //  "onAutoForward": "notify"
-    //},
-    //"4848": {
-    //  "label": "Payara Admin Console",
-    //  "onAutoForward": "silent"
-    //},
-    //"9009": {
-    //  "label": "Java Debug Port",
-    //  "onAutoForward": "silent"
-    //}
+    "8080": {
+      "label": "Payara Application",
+      "onAutoForward": "notify"
+    },
+    "4848": {
+      "label": "Payara Admin Console",
+      "onAutoForward": "silent"
+    },
+    "9009": {
+      "label": "Java Debug Port",
+      "onAutoForward": "silent"
+    }
   },
 
   // ==============================================================================
